@@ -12,6 +12,7 @@ import {
   Stack,
   Text,
   useToast,
+  useColorModeValue as mode,
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
@@ -89,10 +90,12 @@ const LoginScreen = () => {
           <Stack spacing='8'>
             <Stack spacing='6'>
               <Stack spacing={{ base: "2", md: "3" }} textAlign='center'>
-                <Heading fontSize={{ base: "md", lg: "xl" }}>Log in to your account</Heading>
+                <Heading fontSize={{ base: "md", lg: "xl" }} color={mode("black", "whiteAlpha.900")}>
+                  Log in to your account
+                </Heading>
                 <HStack spacing='1' justify='center'>
-                  <Text>Don't have an account?</Text>
-                  <Button as={ReactLink} to='/registration' variant='link' colorScheme='#EE3536'>
+                  <Text color={mode("gray.800", "gray.300")}>Don't have an account?</Text>
+                  <Button as={ReactLink} to='/registration' variant='link' color={mode("#EE3536", "red.300")}>
                     Sign up
                   </Button>
                 </HStack>
@@ -101,10 +104,11 @@ const LoginScreen = () => {
             <Box
               py={{ base: "0", md: "8" }}
               px={{ base: "4", md: "10" }}
-              bg={{ base: "transparent", md: "bg-surface" }}
+              bg={{ base: "transparent", md: mode("white", "gray.800") }}
               boxShadow={{ base: "none", md: "xl" }}
+              borderRadius='md'
             >
-              <Stack spacing='6' as='form' onSubmit={formik.handleSubmit}>
+              <Stack spacing='6' as='form' onSubmit={formik.handleSubmit} color={mode("gray.800", "gray.100")}>
                 {error && (
                   <Alert
                     status='error'
@@ -127,8 +131,9 @@ const LoginScreen = () => {
                       my='2'
                       onClick={() => setShowPasswordReset(!showPasswordReset)}
                       size='sm'
-                      colorScheme='#EE3536'
-                      variant='outline'
+                      color={mode("black", "white")}
+                      bg={mode("gray.200", "whiteAlpha.200")}
+                      _hover={{ bg: mode("gray.300", "whiteAlpha.300") }}
                     >
                       Forgot Password ?
                     </Button>
@@ -136,12 +141,14 @@ const LoginScreen = () => {
                   </FormControl>
                 </Stack>
                 <Stack spacing='6'>
-                  <Button colorScheme='#EE3536' size='lg' fontSize='md' isLoading={loading} type='submit'>
+                  <Button colorScheme='red' size='lg' fontSize='md' isLoading={loading} type='submit'>
                     Sign in
                   </Button>
                   <Button
                     leftIcon={<FcGoogle />}
-                    colorScheme='#EE3536'
+                    bg={mode("gray.100", "whiteAlpha.200")}
+                    color={mode("black", "white")}
+                    _hover={{ bg: mode("gray.200", "whiteAlpha.300") }}
                     size='lg'
                     fontSize='md'
                     isLoading={loading}

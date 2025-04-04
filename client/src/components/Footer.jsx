@@ -78,7 +78,13 @@ const Footer = () => (
             </Text>
             <Stack spacing='4' direction={{ base: "column", sm: "row" }} maxW={{ lg: "360px" }}>
               <Input placeholder='Enter your email' type='email' required bg='white' />
-              <Button colorScheme='cyan' type='submit' flexShrink={0}>
+              <Button
+                type='submit'
+                flexShrink={0}
+                bg={mode("black", "red.500")}
+                color='white'
+                _hover={{ bg: mode("gray.800", "red.600") }}
+              >
                 Subscribe
               </Button>
             </Stack>

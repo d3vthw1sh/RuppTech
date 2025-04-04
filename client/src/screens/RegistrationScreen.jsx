@@ -13,6 +13,7 @@ import {
   Text,
   useBreakpointValue,
   useToast,
+  useColorModeValue as mode,
 } from "@chakra-ui/react";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
@@ -81,10 +82,12 @@ const RegistrationScreen = () => {
           <Stack spacing='8'>
             <Stack spacing='6'>
               <Stack spacing={{ base: "2", md: "3" }} textAlign='center'>
-                <Heading size={headingBR}>Create an account.</Heading>
+                <Heading size={headingBR} color={mode("black", "whiteAlpha.900")}>
+                  Create an account.
+                </Heading>
                 <HStack spacing='1' justify='center'>
-                  <Text color='muted'>Already a user?</Text>
-                  <Button as={ReactLink} to='/login' variant='link' colorScheme='#EE3536'>
+                  <Text color={mode("gray.800", "gray.300")}>Already a user?</Text>
+                  <Button as={ReactLink} to='/login' variant='link' color={mode("#EE3536", "red.300")}>
                     Sign in
                   </Button>
                 </HStack>
@@ -93,8 +96,10 @@ const RegistrationScreen = () => {
             <Box
               py={{ base: "0", md: "8" }}
               px={{ base: "4", md: "10" }}
-              bg={{ boxBR }}
+              bg={boxBR}
               boxShadow={{ base: "none", md: "xl" }}
+              borderRadius='md'
+              color={mode("gray.800", "gray.100")}
             >
               <Stack spacing='6' as='form' onSubmit={formik.handleSubmit}>
                 {error && (
@@ -124,17 +129,19 @@ const RegistrationScreen = () => {
                   </FormControl>
                 </Stack>
                 <Stack spacing='6'>
-                  <Button colorScheme='#EE3536' size='lg' fontSize='md' isLoading={loading} type='submit'>
+                  <Button colorScheme='red' size='lg' fontSize='md' isLoading={loading} type='submit'>
                     Sign up
                   </Button>
                   <Button
-                    colorScheme='#EE3536'
+                    bg={mode("gray.100", "whiteAlpha.200")}
+                    color={mode("black", "white")}
+                    _hover={{ bg: mode("gray.200", "whiteAlpha.300") }}
                     size='lg'
                     fontSize='md'
                     isLoading={loading}
                     onClick={() => handleGoogleLogin()}
+                    leftIcon={<FcGoogle />}
                   >
-                    <FcGoogle size={30} />
                     Sign up with Google
                   </Button>
                 </Stack>
