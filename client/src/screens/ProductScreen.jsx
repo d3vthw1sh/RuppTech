@@ -20,6 +20,7 @@ import {
   Textarea,
   Input,
   Tooltip,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { BiCheckShield, BiPackage, BiSupport } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,6 +44,11 @@ const ProductScreen = () => {
   const [reviewBoxOpen, setReviewBoxOpen] = useState(false);
   const { userInfo } = useSelector((state) => state.user);
   const [buttonLoading, setButtonLoading] = useState(false);
+
+  const textColor = useColorModeValue("gray.800", "gray.100");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
+  const badgeBg = useColorModeValue("gray.100", "gray.700");
+  const fallbackTextColor = useColorModeValue("blackAlpha.800", "whiteAlpha.900");
 
   useEffect(() => {
     dispatch(getProduct(id));
@@ -119,12 +125,14 @@ const ProductScreen = () => {
                     sold out
                   </Badge>
                 )}
-                <Heading fontSize='2xl' fontWeight='extrabold'>
+                <Heading fontSize='2xl' fontWeight='extrabold' color={textColor}>
                   {product.brand} {product.name}
                 </Heading>
                 <Stack spacing='5'>
                   <Box>
-                    <Text fontSize='xl'>${product.price}</Text>
+                    <Text fontSize='xl' color={textColor}>
+                      ${product.price}
+                    </Text>
                     <Flex>
                       <HStack spacing='2px'>
                         <Star color='#EE3536.500' />
@@ -133,30 +141,34 @@ const ProductScreen = () => {
                         <Star rating={product.rating} star={4} />
                         <Star rating={product.rating} star={5} />
                       </HStack>
-                      <Text fontSize='md' fontWeight='bold' ml='4px'>
+                      <Text fontSize='md' fontWeight='bold' ml='4px' color={textColor}>
                         {product.numberOfReviews} Reviews
                       </Text>
                     </Flex>
                   </Box>
-                  <Text>{product.subtitle}</Text>
-                  <Text>{product.description}</Text>
-                  <Text fontWeight='bold'>Quantity</Text>
-                  <Flex w='170px' p='5px' border='1px' borderColor='gray.200' alignItems='center'>
+                  <Text color={textColor}>{product.subtitle}</Text>
+                  <Text color={textColor}>{product.description}</Text>
+                  <Text fontWeight='bold' color={textColor}>
+                    Quantity
+                  </Text>
+                  <Flex w='170px' p='5px' border='1px' borderColor={borderColor} alignItems='center'>
                     <Button isDisabled={amount <= 1} onClick={() => changeAmount("minus")}>
                       <MinusIcon />
                     </Button>
-                    <Text mx='30px'>{amount}</Text>
+                    <Text mx='30px' color={textColor}>
+                      {amount}
+                    </Text>
                     <Button isDisabled={amount >= product.stock} onClick={() => changeAmount("plus")}>
                       <SmallAddIcon />
                     </Button>
                   </Flex>
-                  <Badge fontSize='lg' width='170px' textAlign='center' colorScheme='gray'>
+                  <Badge fontSize='lg' width='170px' textAlign='center' bg={badgeBg} color={textColor}>
                     In Stock: {product.stock}
                   </Badge>
                   <Button
                     variant='outline'
                     isDisabled={product.stock === 0}
-                    colorScheme='#EE3536'
+                    colorScheme='red'
                     onClick={() => addItem()}
                   >
                     Add to cart
@@ -164,19 +176,19 @@ const ProductScreen = () => {
                   <Stack width='270px'>
                     <Flex alignItems='center'>
                       <BiPackage size='20px' />
-                      <Text fontWeight='medium' fontSize='sm' ml='2'>
+                      <Text fontWeight='medium' fontSize='sm' ml='2' color={textColor}>
                         Shipped in 2 - 3 days
                       </Text>
                     </Flex>
                     <Flex alignItems='center'>
                       <BiCheckShield size='20px' />
-                      <Text fontWeight='medium' fontSize='sm' ml='2'>
+                      <Text fontWeight='medium' fontSize='sm' ml='2' color={textColor}>
                         2 year extended warranty
                       </Text>
                     </Flex>
                     <Flex alignItems='center'>
                       <BiSupport size='20px' />
-                      <Text fontWeight='medium' fontSize='sm' ml='2'>
+                      <Text fontWeight='medium' fontSize='sm' ml='2' color={textColor}>
                         We're here for you 24/7
                       </Text>
                     </Flex>
@@ -206,7 +218,7 @@ const ProductScreen = () => {
                     isDisabled={hasUserReviewed()}
                     my='20px'
                     w='140px'
-                    colorScheme='#EE3536'
+                    colorScheme='red'
                     onClick={() => setReviewBoxOpen(!reviewBoxOpen)}
                   >
                     Write a review
@@ -249,7 +261,7 @@ const ProductScreen = () => {
                       isLoading={buttonLoading}
                       loadingText='Saving'
                       w='140px'
-                      colorScheme='#EE3536'
+                      colorScheme='red'
                       onClick={() => onSubmit()}
                     >
                       Publish review
@@ -259,7 +271,7 @@ const ProductScreen = () => {
               </>
             )}
             <Stack>
-              <Text fontSize='xl' fontWeight='bold'>
+              <Text fontSize='xl' fontWeight='bold' color={textColor}>
                 Reviews
               </Text>
               <SimpleGrid minChildWidth='300px' spacingX='40px' spacingY='20px'>
@@ -271,11 +283,13 @@ const ProductScreen = () => {
                       <Star rating={product.rating} star={3} />
                       <Star rating={product.rating} star={4} />
                       <Star rating={product.rating} star={5} />
-                      <Text fontWeight='semibold' ml='4px'>
+                      <Text fontWeight='semibold' ml='4px' color={fallbackTextColor}>
                         {review.title && review.title}
                       </Text>
                     </Flex>
-                    <Box py='12px'>{review.comment}</Box>
+                    <Box py='12px' color={textColor}>
+                      {review.comment}
+                    </Box>
                     <Text fontSize='sm' color='gray.400'>
                       by {review.name}, {new Date(review.createdAt).toDateString()}
                     </Text>
