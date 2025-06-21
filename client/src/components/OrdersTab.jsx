@@ -23,7 +23,12 @@ import {
 import { CheckCircleIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllOrders, deleteOrder, resetErrorAndRemoval, setDelivered } from "../redux/actions/adminActions";
+import {
+  getAllOrders,
+  deleteOrder,
+  resetErrorAndRemoval,
+  setDelivered,
+} from "../redux/actions/adminActions";
 import ConfirmRemovalAlert from "./ConfirmRemovalAlert";
 import { TbTruckDelivery } from "react-icons/tb";
 
@@ -38,6 +43,7 @@ const OrdersTab = () => {
   useEffect(() => {
     dispatch(getAllOrders());
     dispatch(resetErrorAndRemoval());
+
     if (orderRemoval) {
       toast({
         description: "Order has been removed.",
@@ -68,32 +74,41 @@ const OrdersTab = () => {
   return (
     <Box>
       {error && (
-        <Alert status='error'>
+        <Alert status='error' mb='4'>
           <AlertIcon />
-          <AlertTitle>Upps!</AlertTitle>
+          <AlertTitle>Oops!</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
+
       {loading ? (
         <Wrap justify='center'>
           <Stack direction='row' spacing='4'>
-            <Spinner mt='20' thickness='2px' speed='0.65s' emptyColor='gray.200' color='#EE3536.500' size='xl' />
+            <Spinner
+              mt='20'
+              thickness='2px'
+              speed='0.65s'
+              emptyColor='gray.200'
+              color='#EE3536'
+              size='xl'
+            />
           </Stack>
         </Wrap>
       ) : (
         <Box>
           <TableContainer>
             <Table variant='simple'>
-              <Thead>
+              <Thead bg='gray.100'>
                 <Tr>
                   <Th>Date</Th>
                   <Th>Name</Th>
                   <Th>Email</Th>
                   <Th>Shipping</Th>
-                  <Th>Items Ordered</Th>
-                  <Th>Shipping Price</Th>
+                  <Th>Items</Th>
+                  <Th>Shipping</Th>
                   <Th>Total</Th>
-                  <Th>Delivered</Th>
+                  <Th>Status</Th>
+                  <Th>Actions</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -105,35 +120,53 @@ const OrdersTab = () => {
                       <Td>{order.email}</Td>
                       <Td>
                         <Text>
-                          <i>Adress: </i> {order.shippingAddress.address}
+                          <strong>Address:</strong> {order.shippingAddress.address}
                         </Text>
                         <Text>
-                          <i>City: </i> {order.shippingAddress.postalCode} {order.shippingAddress.city}
+                          <strong>City:</strong> {order.shippingAddress.city} - {order.shippingAddress.postalCode}
                         </Text>
                         <Text>
-                          <i>Country: </i> {order.shippingAddress.country}
+                          <strong>Country:</strong> {order.shippingAddress.country}
                         </Text>
                       </Td>
                       <Td>
                         {order.orderItems.map((item) => (
                           <Text key={item._id}>
-                            {item.qty} x {item.name}
+                            {item.qty} × {item.name}
                           </Text>
                         ))}
                       </Td>
-                      <Td>${order.shippingPrice}</Td>
-                      <Td>${order.totalPrice}</Td>
-                      <Td>{order.isDelivered ? <CheckCircleIcon /> : "Pending"}</Td>
+                      <Td>${order.shippingPrice.toFixed(2)}</Td>
+                      <Td>${order.totalPrice.toFixed(2)}</Td>
                       <Td>
-                        <Flex direction='column'>
-                          <Button variant='outline' onClick={() => openDeleteConfirmBox(order)}>
-                            <DeleteIcon mr='5px' />
-                            Remove Order
+                        {order.isDelivered ? (
+                          <CheckCircleIcon color='green.500' />
+                        ) : (
+                          <Text color='orange.400' fontWeight='semibold'>
+                            Pending
+                          </Text>
+                        )}
+                      </Td>
+                      <Td>
+                        <Flex direction='column' gap={2}>
+                          <Button
+                            colorScheme='red'
+                            size='sm'
+                            variant='outline'
+                            onClick={() => openDeleteConfirmBox(order)}
+                            leftIcon={<DeleteIcon />}
+                          >
+                            Remove
                           </Button>
                           {!order.isDelivered && (
-                            <Button mt='4px' variant='outline' onClick={() => onSetToDelivered(order)}>
-                              <TbTruckDelivery />
-                              <Text ml='5px'>Delivered</Text>
+                            <Button
+                              size='sm'
+                              variant='outline'
+                              colorScheme='green'
+                              onClick={() => onSetToDelivered(order)}
+                              leftIcon={<TbTruckDelivery />}
+                            >
+                              Mark Delivered
                             </Button>
                           )}
                         </Flex>
@@ -143,6 +176,7 @@ const OrdersTab = () => {
               </Tbody>
             </Table>
           </TableContainer>
+
           <ConfirmRemovalAlert
             isOpen={isOpen}
             onOpen={onOpen}

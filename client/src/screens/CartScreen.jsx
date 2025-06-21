@@ -21,54 +21,62 @@ import OrderSummary from "../components/OrderSummary";
 const CartScreen = () => {
   const { loading, error, cartItems } = useSelector((state) => state.cart);
 
-  const getHeadingContent = () => (cartItems.length === 1 ? "(1 Item)" : `(${cartItems.length} Items)`);
+  const getHeadingContent = () =>
+    cartItems.length === 1 ? "(1 Item)" : `(${cartItems.length} Items)`;
 
   return (
-    <Wrap spacing='30px' justify='center' minHeight='100vh'>
+    <Wrap spacing="30px" justify="center" minHeight="100vh">
       {loading ? (
-        <Stack direction='row' spacing='4'>
-          <Spinner mt='20' thickness='2px' speed='0.65s' emptyColor='gray.200' color='#EE3536.500' size='xl' />
+        <Stack direction="row" spacing="4">
+          <Spinner
+            mt="20"
+            thickness="2px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="#EE3536"
+            size="xl"
+          />
         </Stack>
       ) : error ? (
-        <Alert status='error'>
+        <Alert status="error">
           <AlertIcon />
           <AlertTitle>We are sorry!</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       ) : cartItems.length <= 0 ? (
-        <Alert status='warning'>
+        <Alert status="warning">
           <AlertIcon />
           <AlertTitle>Your cart is empty.</AlertTitle>
           <AlertDescription>
-            <Link as={ReactLink} to='/products'>
+            <Link as={ReactLink} to="/products" color={mode("red.500", "red.300")}>
               Click here to see your products.
             </Link>
           </AlertDescription>
         </Alert>
       ) : (
-        <Box px='4' py='8' w={{ base: "95%", md: "70%", lg: "50%" }}>
+        <Box px="4" py="8" w={{ base: "95%", md: "70%", lg: "50%" }}>
           <Stack
             direction={{ base: "column", lg: "row" }}
             align={{ lg: "flex-start" }}
             spacing={{ base: "8", md: "16" }}
           >
-            <Stack spacing={{ base: "8", md: "10" }} flex='2'>
-              <Heading fontSize='2xl' fontWeight='extrabold'>
-                Shopping Cart
+            <Stack spacing={{ base: "8", md: "10" }} flex="2">
+              <Heading fontSize="2xl" fontWeight="extrabold">
+                Shopping Cart {getHeadingContent()}
               </Heading>
 
-              <Stack spacing='6'>
+              <Stack spacing="6">
                 {cartItems.map((cartItem) => (
                   <CartItem key={cartItem.id} cartItem={cartItem} />
                 ))}
               </Stack>
             </Stack>
-            <Flex direction='column' align='center' flex='1'>
+            <Flex direction="column" align="center" flex="1">
               <OrderSummary />
 
-              <HStack mt='6' fontWeight='semibold'>
+              <HStack mt="6" fontWeight="semibold">
                 <p>or</p>
-                <Link as={ReactLink} to='/products' color={mode("#EE3536.500", "#EE3536.200")}>
+                <Link as={ReactLink} to="/products" color={mode("red.500", "red.300")}>
                   Continue Shopping
                 </Link>
               </HStack>

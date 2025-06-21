@@ -35,11 +35,15 @@ function App() {
   const [googleClient, setGoogleClient] = useState(null);
   useEffect(() => {
     const googleKey = async () => {
-      const { data: googleId } = await axios.get("/api/config/google");
-      setGoogleClient(googleId);
+      try {
+        const { data: googleId } = await axios.get("http://localhost:5001/api/config/google");
+        setGoogleClient(googleId);
+      } catch (error) {
+        console.error("Failed to fetch Google Client ID", error);
+      }
     };
     googleKey();
-  }, [googleClient]);
+  }, []);
 
   return (
     <ChakraProvider theme={theme}>
@@ -66,7 +70,7 @@ function App() {
                 <Route path='/order-history' element={<YourOrdersScreen />} />
                 <Route path='/success' element={<SuccessScreen />} />
                 <Route path='/admin-console' element={<AdminConsoleScreen />} />
-                <Route path='/hot-deals' element={<HotDealsScreen />} /> {/* ✅ Added this line */}
+                <Route path='/hot-deals' element={<HotDealsScreen />} />
               </Routes>
             </main>
             <Footer />

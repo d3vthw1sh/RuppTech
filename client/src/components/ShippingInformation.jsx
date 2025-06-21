@@ -6,7 +6,6 @@ import {
   Heading,
   Radio,
   RadioGroup,
-  Spacer,
   Stack,
   Text,
   VStack,
@@ -17,91 +16,135 @@ import * as Yup from "yup";
 import { setShipping } from "../redux/actions/cartActions";
 import { setAddress, setPayment } from "../redux/actions/orderActions";
 import TextField from "./TextField";
-import { Link as ReactLink } from "react-router-dom";
+import { Link as ReactLink, useNavigate } from "react-router-dom";
 
 const ShippingInformation = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate(); // Added navigation hook
   const { shipping } = useSelector((state) => state.cart);
   const { shippingAddress } = useSelector((state) => state.order);
 
-  const dispatch = useDispatch();
-
-  const onSubmit = async (values) => {
+  const onSubmit = (values) => {
     dispatch(setAddress(values));
     dispatch(setPayment());
+
+    // Navigate to payment page after saving info
+    navigate("/payment");
   };
 
   return (
     <Formik
       initialValues={{
-        address: shippingAddress ? shippingAddress.address : "",
-        postalCode: shippingAddress ? shippingAddress.postalCode : "",
-        city: shippingAddress ? shippingAddress.city : "",
-        country: shippingAddress ? shippingAddress.country : "",
+        address: shippingAddress?.address || "",
+        postalCode: shippingAddress?.postalCode || "",
+        city: shippingAddress?.city || "",
+        country: shippingAddress?.country || "",
       }}
       validationSchema={Yup.object({
-        address: Yup.string().required("We need an address.").min(2, "This address is too short."),
-        postalCode: Yup.string().required("We need a postal code.").min(2, "This postal code is too short."),
-        city: Yup.string().required("We need a city.").min(2, "This city is too short."),
-        country: Yup.string().required("We need a country.").min(2, "This country is too short."),
+        address: Yup.string()
+          .required("We need an address.")
+          .min(2, "This address is too short."),
+        postalCode: Yup.string()
+          .required("We need a postal code.")
+          .min(2, "This postal code is too short."),
+        city: Yup.string()
+          .required("We need a city.")
+          .min(2, "This city is too short."),
+        country: Yup.string()
+          .required("We need a country.")
+          .min(2, "This country is too short."),
       })}
       onSubmit={onSubmit}
     >
       {(formik) => (
         <>
-          <VStack as='form'>
+          <VStack
+            as="form"
+            spacing={6}
+            onSubmit={formik.handleSubmit}
+            align="stretch"
+          >
             <FormControl>
-              <TextField name='address' placeholder='Street Address' label='Street Address' />
-              <Flex>
-                <Box flex='1' mr='10'>
-                  <TextField name='postalCode' placeholder='Postal Code' label='Postal Code' type='number' />
+              <TextField
+                name="address"
+                placeholder="Street Address"
+                label="Street Address"
+              />
+              <Flex gap={4} mt={4}>
+                <Box flex="1">
+                  <TextField
+                    name="postalCode"
+                    placeholder="Postal Code"
+                    label="Postal Code"
+                    type="text"
+                  />
                 </Box>
-                <Box flex='2'>
-                  <TextField name='city' placeholder='City' label='City' />
+                <Box flex="2">
+                  <TextField name="city" placeholder="City" label="City" />
                 </Box>
               </Flex>
-              <TextField name='country' placeholder='Country' label='Country' />
+              <Box mt={4}>
+                <TextField name="country" placeholder="Country" label="Country" />
+              </Box>
             </FormControl>
-            <Box w='100%' pr='5'>
-              <Heading fontSize='2xl' fontWeight='extrabold' mb='10'>
+
+            <Box mt={10}>
+              <Heading fontSize="2xl" fontWeight="extrabold" mb={6}>
                 Shipping Method
               </Heading>
               <RadioGroup
-                onChange={(e) => {
-                  dispatch(setShipping(e === "express" ? Number(14.99).toFixed(2) : Number(4.99).toFixed(2)));
+                defaultValue={shipping === 4.99 ? "standard" : "express"}
+                onChange={(value) => {
+                  const cost = value === "express" ? 14.99 : 4.99;
+                  dispatch(setShipping(cost.toFixed(2)));
                 }}
-                defaultValue={shipping === 4.99 ? "withoutExpress" : "express"}
               >
-                <Stack direction={{ base: "column", lg: "row" }} align={{ lg: "flex-start" }}>
-                  <Stack pr='10' spacing={{ base: "8", md: "10" }} flex='1.5'>
-                    <Box>
-                      <Radio value='express'>
-                        <Text fontWeight='bold'>Express 14.99</Text>
-                        <Text>Dispatched in 24 hours</Text>
-                      </Radio>
-                    </Box>
-                    <Stack spacing='6'>Express</Stack>
-                  </Stack>
-                  <Radio value='withoutExpress'>
-                    <Box>
-                      <Text fontWeight='bold'>Standard 4.99</Text>
-                      <Text>Dispatched in 2 - 3 days</Text>
-                    </Box>
-                  </Radio>
+                <Stack
+                  direction={{ base: "column", lg: "row" }}
+                  spacing={10}
+                  align={{ lg: "flex-start" }}
+                >
+                  <Box>
+                    <Radio value="express" mb={2}>
+                      <Text fontWeight="bold">Express $14.99</Text>
+                      <Text fontSize="sm" color="gray.600">
+                        Dispatched in 24 hours
+                      </Text>
+                    </Radio>
+                  </Box>
+                  <Box>
+                    <Radio value="standard">
+                      <Text fontWeight="bold">Standard $4.99</Text>
+                      <Text fontSize="sm" color="gray.600">
+                        Dispatched in 2 - 3 days
+                      </Text>
+                    </Radio>
+                  </Box>
                 </Stack>
               </RadioGroup>
             </Box>
           </VStack>
-          <Flex alignItems='center' gap='2' direction={{ base: "column", lg: "row" }}>
-            <Button variant='outline' colorScheme='#EE3536' w='100%' as={ReactLink} to='/cart'>
+
+          <Flex
+            mt={8}
+            gap={4}
+            direction={{ base: "column", lg: "row" }}
+            justify="space-between"
+          >
+            <Button
+              as={ReactLink}
+              to="/cart"
+              variant="outline"
+              colorScheme="red"
+              w="100%"
+            >
               Back to cart
             </Button>
             <Button
-              variant='outline'
-              colorScheme='#EE3536'
-              w='100%'
-              as={ReactLink}
-              to='/payment'
               onClick={formik.handleSubmit}
+              variant="solid"
+              colorScheme="red"
+              w="100%"
             >
               Continue to Payment
             </Button>

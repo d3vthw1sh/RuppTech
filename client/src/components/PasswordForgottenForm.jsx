@@ -1,37 +1,59 @@
-import { Text, Stack, Box, Button, Input } from '@chakra-ui/react';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { sendResetEmail } from '../redux/actions/userActions';
+import { Text, Stack, Box, Button, Input, useToast } from "@chakra-ui/react";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { sendResetEmail } from "../redux/actions/userActions";
 
 const PasswordForgottenForm = () => {
-	const dispatch = useDispatch();
-	const [email, setEmail] = useState('');
-	const handleChange = (event) => {
-		setEmail(event.target.value);
-	};
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const [email, setEmail] = useState("");
 
-	return (
-		<>
-			<Box my='4'>
-				<Text as='b'>Enter your email address below.</Text>
-				<Text>We'll send you an email with a link to reset your password.</Text>
-			</Box>
-			<Stack>
-				<Input
-					mb='4'
-					type='text'
-					name='email'
-					placeholder='Your Email Address'
-					label='Email'
-					value={email}
-					onChange={(e) => handleChange(e)}
-				/>
-				<Button colorScheme='yellow' size='lg' fontSize='md' onClick={() => dispatch(sendResetEmail(email))}>
-					Send Reset Email
-				</Button>
-			</Stack>
-		</>
-	);
+  const handleSubmit = () => {
+    if (!email) {
+      toast({
+        title: "Email required.",
+        description: "Please enter your email address.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    dispatch(sendResetEmail(email));
+    toast({
+      title: "Reset email sent.",
+      description: "Check your inbox for the reset link.",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  return (
+    <Box my={6}>
+      <Text fontWeight="bold" mb={1}>
+        Enter your email address below
+      </Text>
+      <Text mb={4}>We'll send you a link to reset your password.</Text>
+
+      <Stack spacing={4}>
+        <Input
+          type="email"
+          placeholder="Your Email Address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Button
+          colorScheme="red"
+          size="lg"
+          onClick={handleSubmit}
+        >
+          Send Reset Email
+        </Button>
+      </Stack>
+    </Box>
+  );
 };
 
 export default PasswordForgottenForm;

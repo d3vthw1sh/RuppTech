@@ -7,11 +7,13 @@ import order from './slices/order';
 import admin from './slices/admin';
 
 const reducer = combineReducers({
-	product,
-	cart,
-	user,
-	order,
-	admin,
+  product,
+  cart,
+  user,
+  order,
+  admin,
 });
 
-export default configureStore({ reducer });
+const store = configureStore({ reducer });
+
+export default store;

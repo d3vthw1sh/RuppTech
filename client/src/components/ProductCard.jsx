@@ -59,57 +59,68 @@ const ProductCard = ({ product, loading }) => {
     <Skeleton isLoaded={!loading}>
       <Box
         _hover={{ transform: "scale(1.1)", transitionDuration: "0.5s" }}
-        borderWidth='1px'
-        overflow='hidden'
-        p='4'
-        shadow='md'
+        borderWidth="1px"
+        borderRadius="md"
+        overflow="hidden"
+        p={4}
+        shadow="md"
+        bg={mode("white", "gray.700")}
       >
         <Image
           onMouseEnter={() => setIsShown(true)}
           onMouseLeave={() => setIsShown(false)}
           src={product.images[isShown && product.images.length === 2 ? 1 : 0]}
-          fallbackSrc='https://via.placeholder.com/150'
+          fallbackSrc="https://via.placeholder.com/150"
           alt={product.name}
-          height='200px'
+          height="200px"
+          width="100%"
+          objectFit="cover"
+          borderRadius="md"
         />
 
-        {product.stock < 5 ? (
-          <Badge colorScheme='yellow'>only {product.stock} left</Badge>
-        ) : product.stock < 1 ? (
-          <Badge colorScheme='red'>Sold out</Badge>
+        {product.stock < 1 ? (
+          <Badge colorScheme="red" mt={2}>
+            Sold out
+          </Badge>
+        ) : product.stock < 5 ? (
+          <Badge colorScheme="yellow" mt={2}>
+            Only {product.stock} left
+          </Badge>
         ) : (
-          <Badge colorScheme='green'>In Stock</Badge>
-        )}
-
-        {product.productIsNew && (
-          <Badge ml='2' colorScheme='purple'>
-            new
+          <Badge colorScheme="green" mt={2}>
+            In Stock
           </Badge>
         )}
 
-        <Text noOfLines={1} fontSize='xl' fontWeight='semibold' mt='2'>
+        {product.productIsNew && (
+          <Badge ml={2} colorScheme="purple" mt={2}>
+            New
+          </Badge>
+        )}
+
+        <Text noOfLines={1} fontSize="xl" fontWeight="semibold" mt={2}>
           {product.brand} {product.name}
         </Text>
 
-        <Text noOfLines={1} fontSize='md' color='gray.600'>
+        <Text noOfLines={1} fontSize="md" color={mode("gray.600", "gray.300")}>
           {product.subtitle}
         </Text>
 
-        <Flex justify='space-between' alignItems='center' mt='2'>
-          <Badge colorScheme='gray'>{product.category}</Badge>
-          <Text fontSize='xl' fontWeight='semibold' color={mode("black", "whiteAlpha.900")}>
-            ${product.price}
+        <Flex justify="space-between" alignItems="center" mt={2}>
+          <Badge colorScheme="gray">{product.category}</Badge>
+          <Text fontSize="xl" fontWeight="semibold" color={mode("black", "whiteAlpha.900")}>
+            ${product.price.toFixed(2)}
           </Text>
         </Flex>
 
-        <Flex justify='space-between' mt='2'>
+        <Flex justify="space-between" mt={3}>
           {/* Favorite button */}
           <IconButton
             icon={
               favorites.includes(product._id) ? (
-                <MdOutlineFavorite size='20px' />
+                <MdOutlineFavorite size={20} />
               ) : (
-                <MdOutlineFavoriteBorder size='20px' />
+                <MdOutlineFavoriteBorder size={20} />
               )
             }
             onClick={() =>
@@ -117,9 +128,9 @@ const ProductCard = ({ product, loading }) => {
                 ? dispatch(removeFromFavorites(product._id))
                 : dispatch(addToFavorites(product._id))
             }
-            aria-label='Toggle Favorite'
-            variant='ghost'
-            size='sm'
+            aria-label="Toggle Favorite"
+            variant="ghost"
+            size="sm"
             color={iconColor}
             _hover={{ bg: hoverBg }}
             _active={{ bg: activeBg }}
@@ -127,12 +138,12 @@ const ProductCard = ({ product, loading }) => {
 
           {/* Expand button */}
           <IconButton
-            icon={<BiExpand size='20' />}
+            icon={<BiExpand size={20} />}
             as={ReactLink}
             to={`/product/${product._id}`}
-            aria-label='View Details'
-            variant='ghost'
-            size='sm'
+            aria-label="View Details"
+            variant="ghost"
+            size="sm"
             color={iconColor}
             _hover={{ bg: hoverBg }}
             _active={{ bg: activeBg }}
@@ -142,15 +153,19 @@ const ProductCard = ({ product, loading }) => {
           <Tooltip
             isDisabled={!cartPlusDisabled}
             hasArrow
-            label={product.stock <= 0 ? "Out of stock" : "You reached the maximum quantity of this product."}
+            label={
+              product.stock <= 0
+                ? "Out of stock"
+                : "You reached the maximum quantity of this product."
+            }
           >
             <IconButton
               isDisabled={product.stock <= 0 || cartPlusDisabled}
               onClick={() => addItem(product._id)}
-              icon={<TbShoppingCartPlus size='20' />}
-              aria-label='Add to Cart'
-              variant='ghost'
-              size='sm'
+              icon={<TbShoppingCartPlus size={20} />}
+              aria-label="Add to Cart"
+              variant="ghost"
+              size="sm"
               color={iconColor}
               _hover={{ bg: hoverBg }}
               _active={{ bg: activeBg }}

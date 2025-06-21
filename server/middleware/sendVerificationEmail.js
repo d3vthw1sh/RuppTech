@@ -1,13 +1,12 @@
 import nodemailer from "nodemailer";
-// vnch hliv npcv divl
-// rupptech@gmail.com
-export const sendVerificationEmail = (token, email, name) => {
+
+export const sendVerificationEmail = async (token, email, name) => {
   const html = `
     <html>
         <body>
-            <h3>Dear ${name}</h3>
+            <h3>Dear ${name},</h3>
             <p>Thanks for signing up at RuppTechs!</p>
-            <p>Use the link below to verify your email</p>
+            <p>Use the link below to verify your email:</p>
             <a href="http://localhost:3000/email-verify/${token}">Click here!</a>
         </body>
     </html>
@@ -16,24 +15,22 @@ export const sendVerificationEmail = (token, email, name) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "rupptech@gmail.com",
-      pass: "vnch hliv npcv divl",
+      user: process.env.EMAIL_USER,  // put your email in .env
+      pass: process.env.EMAIL_PASS,  // put your email password/app password in .env
     },
   });
 
   const mailOptions = {
-    from: "rupptech@gmail.com",
+    from: process.env.EMAIL_USER,
     to: email,
     subject: "Verify your email address",
     html: html,
   };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log(`Email send to ${email}`);
-      console.log(info.response);
-    }
-  });
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`Email sent to ${email}: ${info.response}`);
+  } catch (error) {
+    console.error(`Error sending email to ${email}:`, error);
+  }
 };

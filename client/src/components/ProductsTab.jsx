@@ -27,9 +27,10 @@ import AddNewProduct from "./AddNewProduct";
 
 const ProductsTab = () => {
   const dispatch = useDispatch();
+  const toast = useToast();
+
   const { error, loading } = useSelector((state) => state.admin);
   const { products, productUpdate } = useSelector((state) => state.product);
-  const toast = useToast();
 
   useEffect(() => {
     dispatch(getProducts());
@@ -47,54 +48,56 @@ const ProductsTab = () => {
   return (
     <Box>
       {error && (
-        <Alert status='error'>
+        <Alert status="error" mb={4}>
           <AlertIcon />
-          <AlertTitle>Upps!</AlertTitle>
+          <AlertTitle>Oops!</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
+
       {loading ? (
-        <Wrap justify='center'>
-          <Stack direction='row' spacing='4'>
-            <Spinner mt='20' thickness='2px' speed='0.65s' emptyColor='gray.200' color='#EE3536.500' size='xl' />
+        <Wrap justify="center" my={10}>
+          <Stack direction="row" spacing={4}>
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="red.400"
+              size="xl"
+            />
           </Stack>
         </Wrap>
       ) : (
         <Box>
-          <Accordion allowToggle>
+          <Accordion allowToggle mb={6}>
             <AccordionItem>
-              <h2>
-                <AccordionButton>
-                  <Box flex='1' textAlign='right'>
-                    <Box>
-                      <Text mr='8px' fontWeight='bold'>
-                        Add a new Product
-                      </Text>
-                    </Box>
-                  </Box>
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb='4'>
-                <Table>
+              <AccordionButton justifyContent="flex-end" fontWeight="bold">
+                Add a new Product
+              </AccordionButton>
+              <AccordionPanel pb={4}>
+                <Table size="sm" variant="simple">
                   <AddNewProduct />
                 </Table>
               </AccordionPanel>
             </AccordionItem>
           </Accordion>
-          <Table variant='simple' size='lg'>
-            <Thead>
+
+          <Table variant="simple" size="lg">
+            <Thead bg="gray.100">
               <Tr>
                 <Th>Images</Th>
                 <Th>Description</Th>
                 <Th>Brand & Name</Th>
                 <Th>StripeId & Subtitle</Th>
                 <Th>Category & Price</Th>
-                <Th>Stock & new Badge</Th>
+                <Th>Stock & New Badge</Th>
               </Tr>
             </Thead>
             <Tbody>
               {products.length > 0 &&
-                products.map((product) => <ProductTableItem key={product._id} product={product} />)}
+                products.map((product) => (
+                  <ProductTableItem key={product._id} product={product} />
+                ))}
             </Tbody>
           </Table>
         </Box>

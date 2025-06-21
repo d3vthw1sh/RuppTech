@@ -27,7 +27,7 @@ import ConfirmRemovalAlert from "./ConfirmRemovalAlert";
 const UsersTab = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
-  const [userToDelete, setUserToDelete] = useState("");
+  const [userToDelete, setUserToDelete] = useState(null);
   const dispatch = useDispatch();
   const { error, loading, userRemoval, userList } = useSelector((state) => state.admin);
   const { userInfo } = useSelector((state) => state.user);
@@ -36,6 +36,7 @@ const UsersTab = () => {
   useEffect(() => {
     dispatch(getAllUsers());
     dispatch(resetErrorAndRemoval());
+
     if (userRemoval) {
       toast({
         description: "User has been removed.",
@@ -53,56 +54,63 @@ const UsersTab = () => {
   return (
     <Box>
       {error && (
-        <Alert status='error'>
+        <Alert status="error" mb={4}>
           <AlertIcon />
-          <AlertTitle>Upps!</AlertTitle>
+          <AlertTitle>Oops!</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
+
       {loading ? (
-        <Wrap justify='center'>
-          <Stack direction='row' spacing='4'>
-            <Spinner mt='20' thickness='2px' speed='0.65s' emptyColor='gray.200' color='#EE3536.500' size='xl' />
+        <Wrap justify="center" my={10}>
+          <Stack direction="row" spacing={4}>
+            <Spinner
+              mt={20}
+              thickness="2px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="red.400"
+              size="xl"
+            />
           </Stack>
         </Wrap>
       ) : (
-        <Box>
-          <TableContainer>
-            <Table variant='simple'>
-              <Thead>
-                <Tr>
-                  <Th>Name</Th>
-                  <Th>Email</Th>
-                  <Th>Registered</Th>
-                  <Th>Admin</Th>
-                  <Th>Action</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {userList &&
-                  userList.map((user) => (
-                    <Tr key={user._id}>
-                      <Td>
-                        {user.name} {user._id === userInfo._id ? "(You)" : ""}
-                      </Td>
-                      <Td>{user.email}</Td>
-                      <Td>{new Date(user.createdAt).toDateString()}</Td>
-                      <Td>{user.isAdmin ? <CheckCircleIcon color='#EE3536.500' /> : ""}</Td>
-                      <Td>
-                        <Button
-                          leftIcon={<DeleteIcon />}
-                          isDisabled={user._id === userInfo._id}
-                          variant='outline'
-                          onClick={() => openDeleteConfirmBox(user)}
-                        >
-                          Remove User
-                        </Button>
-                      </Td>
-                    </Tr>
-                  ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+        <TableContainer>
+          <Table variant="simple" size="md">
+            <Thead>
+              <Tr>
+                <Th>Name</Th>
+                <Th>Email</Th>
+                <Th>Registered</Th>
+                <Th>Admin</Th>
+                <Th>Action</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {userList &&
+                userList.map((user) => (
+                  <Tr key={user._id}>
+                    <Td>
+                      {user.name} {user._id === userInfo._id ? "(You)" : ""}
+                    </Td>
+                    <Td>{user.email}</Td>
+                    <Td>{new Date(user.createdAt).toDateString()}</Td>
+                    <Td>{user.isAdmin && <CheckCircleIcon color="red.400" />}</Td>
+                    <Td>
+                      <Button
+                        leftIcon={<DeleteIcon />}
+                        isDisabled={user._id === userInfo._id}
+                        variant="outline"
+                        colorScheme="red"
+                        onClick={() => openDeleteConfirmBox(user)}
+                      >
+                        Remove User
+                      </Button>
+                    </Td>
+                  </Tr>
+                ))}
+            </Tbody>
+          </Table>
           <ConfirmRemovalAlert
             isOpen={isOpen}
             onOpen={onOpen}
@@ -111,7 +119,7 @@ const UsersTab = () => {
             itemToDelete={userToDelete}
             deleteAction={deleteUser}
           />
-        </Box>
+        </TableContainer>
       )}
     </Box>
   );
