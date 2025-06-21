@@ -25,7 +25,7 @@ app.use('/api/orders', orderRoutes);
 
 app.get('/api/config/google', (req, res) => res.send(process.env.GOOGLE_CLIENT_ID));
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
@@ -33,7 +33,7 @@ app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '/client/build')));
 
-  app.get('*', (req, res) => 
+  app.get('*', (req, res) =>
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
   );
 }
