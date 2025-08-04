@@ -15,7 +15,7 @@ A full-stack web app for browsing and buying mobile phones. Users can register, 
 ### 1. Clone the project
 
 ```bash
-git clone <your-repo-url>
+git clone <this repo url>
 cd d3vthw1sh-rupptech
 ```
 
